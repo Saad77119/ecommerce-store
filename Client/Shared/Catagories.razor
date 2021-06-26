@@ -1,0 +1,39 @@
+﻿
+@using Estore.Client.Services
+@using Estore.Shared.Models
+@using System.Threading.Tasks
+@using System.Linq;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+
+
+<ul class="main-category">
+    @if(CatagoryList == null){
+    <li>No Catagory</li>
+    }
+    @foreach (var SingleCatagory in CatagoryList) {
+    <li><a href="#">@SingleCatagory.Name</a></li>
+    
+    }
+</ul>
+@code { 
+    Estore.Shared.Models.Catagory[] CatagoryList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            CatagoryList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
+            ("/api/Catagories/Index");
+
+            CatagoryList.Take(8);
+
+
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+    } }

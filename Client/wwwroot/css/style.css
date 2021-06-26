@@ -1,0 +1,287 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(100deg,#f7a440 50%,#f6dcbf 50%);
+    /* background: url("/images/background-1.jpg") no-repeat;
+    background-size: cover; */
+}
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+    padding: 5px;
+    background-color: black;
+}
+
+.products {
+    margin-left: -5px;
+}
+
+#slider img {
+    height: 100%;
+    width: 100%;
+}
+
+.brand_name {
+    color: #ca131c;
+}
+
+#brand_name i {
+    margin-right: 10px;
+}
+
+.navbar {
+    background: #b088f9;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0;
+}
+
+.nav-item {
+    margin: 0 20px;
+}
+
+    .nav-item > .nav-link {
+        font-size: 14px;
+        color: #000000;
+        font-weight: 600;
+    }
+
+.trolly {
+    font-size: 20px;
+}
+
+#sidebar {
+    padding: 10px;
+}
+
+    #sidebar h4 {
+        font-size: 15px;
+    }
+
+    #sidebar .subcategory input[type="checkbox"] {
+        width: 1px;
+    }
+
+    #sidebar .subcategory label {
+        font-size: 13px;
+    }
+
+    #sidebar .subcategory {
+        padding-left: 10px;
+    }
+
+.product_row .product {
+    padding: 10px;
+    /* border: 1px solid #000;*/
+    transition: all ease 0.3s;
+}
+
+    .product_row .product img {
+        width: 100%;
+    }
+
+    .product_row .product .price {
+        font-weight: 600;
+        margin-top: 5px;
+        color: #f72604;
+    }
+
+    .product_row .product .p_name {
+        text-align: left;
+        display: block;
+        margin: 10px 10px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 16px;
+        overflow: hidden;
+        height: 50px;
+        width: 100%;
+        text-overflow: ellipsis;
+    }
+
+    .product_row .product:hover {
+        transform: scale(1.04);
+        box-shadow: 5px 5px 10px 10px #bfbcbc;
+    }
+
+footer {
+    position: static;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    background: #f1f1f1;
+    padding: 20px;
+}
+
+    footer h6 {
+        font-weight: bold;
+    }
+
+    footer a {
+        text-decoration: none;
+        color: gray;
+        transition: all ease 0.3s;
+    }
+
+        footer a:hover {
+            color: #006FAB;
+            text-decoration: none;
+        }
+
+    footer ul {
+        list-style: none;
+    }
+
+#facebook {
+    color: #4867AA;
+}
+
+#youtube {
+    color: #FF0000;
+}
+
+#twitter {
+    color: #1C9CEA;
+}
+
+#linkedin {
+    color: #006FAB;
+}
+
+#google_plus {
+    color: #C2443A;
+}
+
+/*
+input[type="email"],[type="text"],[type="password"]{
+    width:90%;
+    height: 40px;
+    background:#f1f1f1;
+    border:2px solid rgba(116, 114, 114, 0.555);
+
+    display:block;
+    margin: 0 auto;
+    padding:5px;
+    font-size:20px;
+    color:rgb(116, 114, 114);
+}*/
+
+
+/*contact page  css code start here*/
+
+.contact_data {
+    padding: 10px;
+    margin-bottom: 30px;
+    min-height: 75vh;
+}
+
+    .contact_data p {
+        text-align: justify;
+        text-indent: 15px;
+    }
+
+    .contact_data .label {
+        margin-top: 0px;
+        padding: 2px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .contact_data .label_description {
+        font-family: 'Poppins';
+        color: black;
+        font-size: 18px;
+        color: #000000a3;
+        margin-left: 18px;
+    }
+
+    .contact_data .icon {
+        font-size: 30px;
+        padding: 10px;
+        padding-left: 20px;
+        color: crimson;
+    }
+
+    .contact_data #exampleInputText1, #exampleInputText2, #exampleInputEmail1, #exampleFormControlTextarea1 {
+        margin: 12.5px 0px 12.5px 0px;
+        padding: 10px;
+        background: white;
+        font-size: 15px;
+        background: white;
+        font-weight: 300;
+    }
+
+    .contact_data #exampleInputText1 {
+        width: 48%;
+        float: left;
+    }
+
+    .contact_data #exampleInputEmail1 {
+        width: 48%;
+        margin-left: 15px;
+        float: right;
+    }
+
+    .contact_data #exampleInputText2 {
+        width: 100%;
+        float: left;
+    }
+
+#contact {
+    margin-top: 30px;
+}
+
+.contact_data h5 {
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.contact_data #btn {
+    margin-bottom: 50px;
+}
+
+
+
+
+
+
+/*contact page  css code End here*/
+
+@media screen and (max-width:500px) {
+    .card {
+        width: 30px;
+    }
+
+    .card-img-top {
+        width: 70px;
+    }
+
+    .card-title {
+        font-size: 20px;
+    }
+}

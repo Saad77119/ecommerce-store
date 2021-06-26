@@ -1,0 +1,23 @@
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\bin\Debug\net5.0\Estore.Shared.deps.json
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\bin\Debug\net5.0\Estore.Shared.dll
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\bin\Debug\net5.0\ref\Estore.Shared.dll
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\bin\Debug\net5.0\Estore.Shared.pdb
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\Estore.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\Estore.Shared.AssemblyInfoInputs.cache
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\Estore.Shared.AssemblyInfo.cs
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\Estore.Shared.csproj.CoreCompileInputs.cache
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\Estore.Shared.dll
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\ref\Estore.Shared.dll
+C:\Users\saadr\OneDrive\Desktop\ead semester\Estore\Shared\obj\Debug\net5.0\Estore.Shared.pdb
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\bin\Debug\net5.0\Estore.Shared.deps.json
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\bin\Debug\net5.0\Estore.Shared.dll
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\bin\Debug\net5.0\ref\Estore.Shared.dll
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\bin\Debug\net5.0\Estore.Shared.pdb
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.csproj.AssemblyReference.cache
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.AssemblyInfoInputs.cache
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.AssemblyInfo.cs
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.csproj.CoreCompileInputs.cache
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.dll
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\ref\Estore.Shared.dll
+C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Shared\obj\Debug\net5.0\Estore.Shared.pdb

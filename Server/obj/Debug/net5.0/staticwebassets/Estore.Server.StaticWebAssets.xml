@@ -1,0 +1,8 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="/" Path="C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\bin\Debug\net5.0\wwwroot\" />
+  <ContentRoot BasePath="/" Path="C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\obj\Debug\net5.0\scopedcss\bundle\" />
+  <ContentRoot BasePath="/" Path="C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\wwwroot\" />
+  <ContentRoot BasePath="/Identity" Path="C:\Users\saadr\.nuget\packages\microsoft.aspnetcore.identity.ui\5.0.7\staticwebassets\V4\" />
+  <ContentRoot BasePath="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication" Path="C:\Users\saadr\.nuget\packages\microsoft.aspnetcore.components.webassembly.authentication\5.0.7\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/Syncfusion.Blazor" Path="C:\Users\saadr\.nuget\packages\syncfusion.blazor\19.1.0.69\build\..\staticwebassets\" />
+</StaticWebAssets>

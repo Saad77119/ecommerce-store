@@ -1,0 +1,125 @@
+﻿@using Estore.Client.Services
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+
+<AuthorizeView Roles="Admin">
+    <header class="app-header">
+        <a class="app-header__logo" href="/">Estore</a>
+        <!-- Sidebar toggle button-->
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navbar Right Menu-->
+        <ul class="app-nav">
+
+
+            <!-- User Menu-->
+            <li class="dropdown">
+                <button class="app-nav__item btn btn-link ml-md-auto" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>@context.User.Identity.Name</span><i class="fa fa-user fa-lg"></i></button>
+                <ul class="dropdown-menu settings-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"sss>
+                    <li>
+                        <button type="button" class="btn btn-link ml-md-auto dropdown-item" @onclick="@LogoutClick"><i class="fa fa-sign-out fa-lg"></i> Logout</button>
+
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </header>
+    <!-- Sidebar menu-->
+    <div class="app-sidebar__overlay @NavMenuCssClass" @onclick="ToggleNavMenu"></div>
+    <aside class="app-sidebar">
+        <div class="app-sidebar__user">
+
+            <div>
+                <p class="app-sidebar__user-name">Estore</p>
+
+            </div>
+        </div>
+
+  
+        <ul class="app-menu">
+            <li>
+                <NavLink class="app-menu__item active" href="/"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></NavLink>
+            </li>
+            <li><NavLink class="app-menu__item" href="/productslist" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">View Product</span></NavLink></li>
+            <li> <NavLink class="app-menu__item" href="/shopsList" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Shops List</span></NavLink></li>
+            <li><NavLink class="app-menu__item" href="/CatagoryList" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">View Catagory</span></NavLink></li>
+            <li> <NavLink class="app-menu__item" href="/addcatagory" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Add Catagory</span></NavLink></li>
+
+
+        </ul>
+
+    </aside>
+</AuthorizeView>
+<AuthorizeView Roles="Seller">
+    <header class="app-header">
+        <a class="app-header__logo" href="/">Estore</a>
+        <!-- Sidebar toggle button-->
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navbar Right Menu-->
+        <ul class="app-nav">
+
+
+            <!-- User Menu-->
+            <li class="dropdown">
+                <button class="app-nav__item btn btn-link ml-md-auto" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>@context.User.Identity.Name</span><i class="fa fa-user fa-lg"></i></button>
+                <ul class="dropdown-menu settings-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" sss>
+                    <li>
+                        <button type="button" class="btn btn-link ml-md-auto dropdown-item" @onclick="@LogoutClick"><i class="fa fa-sign-out fa-lg"></i> Logout</button>
+
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </header>
+    <!-- Sidebar menu-->
+    <div class="app-sidebar__overlay @NavMenuCssClass" @onclick="ToggleNavMenu"></div>
+    <aside class="app-sidebar">
+        <div class="app-sidebar__user">
+
+            <div>
+                <p class="app-sidebar__user-name">Estore</p>
+
+            </div>
+        </div>
+
+        <ul class="app-menu">
+            <li>
+                <NavLink class="app-menu__item active" href="/"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></NavLink>
+            </li>
+
+
+
+            <li><NavLink class="app-menu__item" href="/productslist" data-toggle="treeview"><i class="app-menu__icon fa fa-edit"></i><span class="app-menu__label">View Product</span></NavLink></li>
+
+
+            <li>  <NavLink class="app-menu__item" href="/addproduct" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Add Product </span></NavLink></li>
+            <li> <NavLink class="app-menu__item" href="/shopsList" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Shops List</span></NavLink></li>
+            <li> <NavLink class="app-menu__item" href="/addshop" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Add Shop</span></NavLink></li>
+        </ul>
+
+
+    </aside>
+</AuthorizeView>
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    async Task LogoutClick()
+    {
+        await authStateProvider.Logout();
+        navigationManager.NavigateTo("/login");
+    }
+}
+<style>
+    a.app-menu__item {
+        color: #fff;
+    }
+</style>

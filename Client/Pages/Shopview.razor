@@ -1,0 +1,131 @@
+﻿@page "/shopview"
+@using Estore.Shared.Models
+@using Estore.Client.Services
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject CustomStateProvider authStateProvider
+@inject HttpClient Http
+@attribute [Authorize]
+<section class="hero-slider">
+    <!-- Single Slider -->
+    <div class="single-slider">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-lg-9 offset-lg-3 col-12">
+                    <div class="text-inner">
+                        <div class="row">
+                            <div class="col-lg-7 col-12">
+                                <div class="hero-text">
+                                    <h1><span>Welcome To   </span>Estore</h1>
+                                    <p>Pakistan's best online shopping store with 1+ million  <br>  products at resounding discounts  with cash on delivery (COD).</p>
+                                    <div class="button">
+                                        <a href="#" class="btn">Shop Now!</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Single Slider -->
+</section>
+<section class="product-area shop-sidebar shop section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-12">
+                <div class="shop-sidebar">
+                    <!-- Single Widget -->
+                    <div class="single-widget category">
+                        <h3 class="title">Categories</h3>
+                        <ul class="categor-list">
+                            @if (CatagoriesList == null)
+                            {
+                                <p>No Catagory is Found</p>
+                            }
+                            else
+                            {
+                                @foreach(Catagory SingleCatagory in CatagoriesList)
+                                {
+                                    <li><a href="#">@SingleCatagory.Name</a></li>
+
+                                    }
+                                }
+                            </ul>
+                    </div>
+                    <!--/ End Single Widget -->
+
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-8 col-12">
+
+                <div class="row">
+                    @if (ProductList == null)
+                    {
+                        <p>No Product is Found</p>
+                    }
+                    else
+                    {
+                        @foreach (Product SingleProduct in ProductList)
+                        {
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <div class="single-product">
+                                    <div class="product-img">
+                                        <a href="product-details.html">
+                                            <img class="default-img" src="@SingleProduct.Image" alt="#">
+                                            <img class="hover-img" src="@SingleProduct.Image" alt="#">
+                                        </a>
+                                        <div class="button-head">
+                                            <div class="product-action">
+                                                <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="/singleproductdetail/@SingleProduct.ID"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+
+                                            </div>
+                                            <div class="product-action-2">
+                                                <a title="Add to cart" href="/singleproductdetail/@SingleProduct.ID">View Product</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-content">
+                                        <h3><a href="/singleproductdetail/@SingleProduct.ID">@SingleProduct.Name</a></h3>
+                                        <div class="product-price">
+                                            <span>PKr @SingleProduct.Price</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                        </div>
+            </div>
+        </div>
+    </div>
+</section>
+@functions{
+    string currentuserid = "";
+    Estore.Shared.Models.Catagory[] CatagoriesList;
+    Estore.Shared.Models.Product[] ProductList;
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            ProductList = await Http.GetFromJsonAsync<Estore.Shared.Models.Product[]>
+("/api/Products/Index");
+            CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
+("api/Catagories/Index");
+          
+
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+
+    }
+
+}

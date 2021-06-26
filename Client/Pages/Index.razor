@@ -1,0 +1,339 @@
+﻿@page "/"
+@using Estore.Shared.Models
+@using Estore.Client.Services
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Estore.Shared
+@inject CustomStateProvider authStateProvider
+@inject HttpClient Http
+@attribute [Authorize]
+<AuthorizeView Roles="Buyer">
+    <Authorized>
+        <section class="hero-slider">
+            <!-- Single Slider -->
+            <div class="single-slider">
+                <div class="container">
+                    <div class="row no-gutters">
+                        <div class="col-lg-9 offset-lg-3 col-12">
+                            <div class="text-inner">
+                                <div class="row">
+                                    <div class="col-lg-7 col-12">
+                                        <div class="hero-text">
+                                            <h1><span>Welcome To   </span>Estore</h1>
+                                            <p>Pakistan's best online shopping store with 1+ million  <br>  products at resounding discounts  with cash on delivery (COD).</p>
+                                            <div class="button">
+                                                <a href="/shopview" class="btn">Shop Now!</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ End Single Slider -->
+        </section>
+        <div class="product-area section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="section-title">
+                            <h2>Trending Item</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="product-info">
+                            <div class="nav-main">
+                                <!-- Tab Nav -->
+                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    @if (CatagoriesList == null)
+                                    {
+
+
+                                        <p>No Catagory is avaliale Here</p>
+                                    }
+                                    else
+                                    {
+
+                                        @foreach (Catagory singleCatagory in CatagoriesList.Take(6))
+                                        {
+                                            <li class="nav-item"><a class="nav-link @((i==0)?"active":"" ) " data-toggle="tab" href="#@singleCatagory.Name.Replace(" ","")" role="tab">@singleCatagory.Name </a></li>
+                                            i = i + 1;
+                                        }
+                                    }
+
+                                </ul>
+                                <!--/ End Tab Nav -->
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                @if (CatagoriesList == null)
+                                {
+
+
+                                    <p>No Catagory is avaliale Here</p>
+                                }
+                                else
+                                {
+                                    @foreach (Catagory singleCatagory in CatagoriesList.Take(6))
+                                    {
+
+                                       
+                                            <!-- Start Single Tab -->
+                                            <div class="tab-pane  @((y==0)?"fade show active":"" ) " id="@singleCatagory.Name.Replace(" ","")" role="tabpanel">
+                                                <div class="tab-single">
+                                                    <div class="row">
+                                                        
+                                                        @foreach (Product SingleProduct in ProductList)
+                                                        {
+
+                                                            @if (@getcatagoryarray(SingleProduct.CatagoryID).Contains(singleCatagory.Id.ToString()))
+                                                            {
+
+                                                                <div class="col-xl-3 col-lg-4 col-md-4 col-12">
+                                                                    <div class="single-product">
+                                                                        <div class="product-img">
+                                                                            <a href="/singleproductdetail/@SingleProduct.ID">
+                                                                                <img class="default-img" src="@SingleProduct.Image" alt="#">
+                                                                                <img class="hover-img" src="@SingleProduct.Image" alt="#">
+                                                                            </a>
+                                                                            <div class="button-head">
+                                                                                <div class="product-action">
+                                                                                    <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+                                                                                  
+                                                                                    <a title="Compare" href="/singleproductdetail/@SingleProduct.ID"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+                                                                                </div>
+                                                                                <div class="product-action-2">
+                                                                                    <a title="View Product" href="#/singleproductdetail/@SingleProduct.ID">View Product</a>
+                                                                                </div>
+                                                                            </div>
+                                                                          </div>
+                                                                        <div class="product-content">
+                                                                            <h3><a href="/singleproductdetail/@SingleProduct.ID">@SingleProduct.Name</a></h3>
+                                                                            <div class="product-price">
+                                                                                <span>PKr @SingleProduct.Price</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/ End Single Tab -->
+                                        y=y+1;
+                                    }}
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </Authorized>
+    <Authorizing>
+        <h1>Loading ...</h1>
+    </Authorizing>
+</AuthorizeView>
+
+<AuthorizeView Roles="Admin">
+
+    <div class="card">
+        <div class="card-body text-center">
+            <i style="font-size: 6rem;" class="fa fa-user-circle "></i>
+            <h1>Hello @context.User.Identity.Name !!</h1>
+
+            <p>Welcome to Admin  Dashboard of Estore.</p>
+
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row col-md-12">
+        <div class=" col-md-4 col-sm-12">
+            <div class="card text-center" style=" box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); border-radius: 10px; ">
+                <div class="card-body">
+                    <i style="font-size: 4rem; color: #009688; margin-bottom: 12px;" class="fa fa-shopping-basket"></i>
+
+                    <h3>Shops </h3>
+                    <ul style=" list-style: none; font-size: 1.3em; " class="ul">
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>View Shop List
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Add New Shop
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Edit Shop
+                        </li>
+
+                    </ul>
+                    <a href="/shopsList" class="btn btn-success" style="padding: 14px;font-size: 1.1em;">View Shop List</a>
+                </div>
+
+            </div>
+        </div>
+        <div class=" col-md-4 col-sm-12">
+            <div class="card text-center" style=" box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); border-radius: 10px; ">
+                <div class="card-body">
+                    <i style="font-size: 4rem; color: #009688; margin-bottom: 12px;" class="fa fa-tag"></i>
+
+                    <h3>  Catagory</h3>
+                    <ul style=" list-style: none; font-size: 1.3em; " class="ul">
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>View Catagory List
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Add New Catagory
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Edit Catagory
+                        </li>
+
+                    </ul>
+                    <a href="/CatagoryList" class="btn btn-success" style="padding: 14px;font-size: 1.1em;">View Catagories</a>
+                </div>
+
+            </div>
+        </div>
+        <div class=" col-md-4 col-sm-12">
+            <div class="card text-center" style=" box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); border-radius: 10px; ">
+                <div class="card-body">
+
+                    <i style="font-size: 4rem; color: #009688; margin-bottom: 12px;" class="fa fa-product-hunt" aria-hidden="true"></i>
+                    <h3>Products</h3>
+                    <ul style=" list-style: none; font-size: 1.3em; " class="ul">
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>View Products
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Add New Product
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Edit Product
+                        </li>
+
+                    </ul>
+                    <a href="/productslist" class="btn btn-success" style="padding: 14px;font-size: 1.1em;">View Products</a>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+</AuthorizeView>
+<AuthorizeView Roles="Seller">
+
+    <div class="card">
+        <div class="card-body text-center">
+            <i style="font-size: 6rem;" class="fa fa-user-circle "></i>
+            <h1>Hello @context.User.Identity.Name !!</h1>
+
+            <p>Welcome to Seller  Dashboard of Estore.</p>
+
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row col-md-12">
+        <div class=" col-md-4 col-sm-12">
+            <div class="card text-center" style=" box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); border-radius: 10px; ">
+                <div class="card-body">
+                    <i style="font-size: 4rem; color: #009688; margin-bottom: 12px;" class="fa fa-shopping-basket"></i>
+
+                    <h3>Shops </h3>
+                    <ul style=" list-style: none; font-size: 1.3em; " class="ul">
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>View Shop List
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Add New Shop
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Edit Shop
+                        </li>
+
+                    </ul>
+                    <a href="/shopsList" class="btn btn-success" style="padding: 14px;font-size: 1.1em;">View Shop List</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class=" col-md-4 col-sm-12">
+            <div class="card text-center" style=" box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); border-radius: 10px; ">
+                <div class="card-body">
+
+                    <i style="font-size: 4rem; color: #009688; margin-bottom: 12px;" class="fa fa-product-hunt" aria-hidden="true"></i>
+                    <h3>Products</h3>
+                    <ul style=" list-style: none; font-size: 1.3em; " class="ul">
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>View Products
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Add New Product
+                        </li>
+                        <li class="li">
+                            <i style=" font-size: 1.4em; margin-right: 10px;" class="fa fa-check"></i>Edit Product
+                        </li>
+
+                    </ul>
+                    <a href="/productslist" class="btn btn-success" style="padding: 14px;font-size: 1.1em;">View Products</a>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+</AuthorizeView>
+
+@functions{
+    int i = 0;
+    int y = 0;
+    string currentuserid = "";
+    Estore.Shared.Models.Shop[] ShopList;
+    Estore.Shared.Models.Catagory[] CatagoriesList;
+    Estore.Shared.Models.Product[] ProductList;
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            ProductList = await Http.GetFromJsonAsync<Estore.Shared.Models.Product[]>
+("/api/Products/Index");
+            CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
+("api/Catagories/Index");
+            CatagoriesList.Take(7);
+            ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
+("api/Shops/Index");
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+
+    }
+    public string[] getcatagoryarray(String catagory_id)
+    {
+        string[] catagoryarray = catagory_id.Split(",");
+        return catagoryarray;
+    }
+
+
+}

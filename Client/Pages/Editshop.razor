@@ -1,0 +1,58 @@
+﻿@using Estore.Shared.Models
+@page "/editshop/{ShopID}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@attribute [Authorize]
+<div class="card">
+    <div class="card-header">
+        <h2>Edit Shop</h2>
+
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <EditForm Model="@shop">
+                    <div class="form-group">
+                        <label for="Name" class="control-label">Name</label>
+                        <input for="Name" class="form-control" @bind="shop.Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Address" class="control-label">Address</label>
+                        <textarea for="" class="form-control" @bind="shop.Address">
+                                            
+                                </textarea>
+
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" @onclick="@(async () => await UpdateShop())" class="btn btn-success">Update</button>
+                        <button @onclick="@cancel" class="btn btn-default">Cancel</button>
+
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+@functions {
+    [Parameter]
+    public string ShopID { get; set; }
+    Shop shop = new Shop();
+    protected override async Task OnInitializedAsync()
+    {
+        shop = await Http.GetFromJsonAsync<Shop>
+    ("/api/Shops/Details/" + Convert.ToInt32(ShopID));
+    }
+    protected async Task UpdateShop()
+    {
+        await Http.PutAsJsonAsync("api/Shops/Edit", shop);
+        UriHelper.NavigateTo("/shopsList");
+    }
+    void cancel()
+    {
+        UriHelper.NavigateTo("/shopsList");
+    }
+}

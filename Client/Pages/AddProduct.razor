@@ -1,0 +1,255 @@
+﻿@page "/addproduct"
+@using System.Net.Http.Json;
+@using Estore.Shared.Models
+@using Estore.Client.Services
+@using Estore.Shared
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using System.IO
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject CustomStateProvider authStateProvider
+@inject IJSRuntime JSRuntime;
+
+@attribute [Authorize]
+
+
+<div class="card">
+    <div class="card-header">
+        <h1>Add New Product</h1>
+    </div>
+
+    <div class="card-body">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <EditForm Model="@shop" OnValidSubmit="@CreateProduct">
+
+                <div class="form-group">
+                    <label for="Name" class="control-label">Name</label>
+                    <InputText id="Name" class="form-control" placeholder="Product Name" autofocus @bind-Value="Product.Name"></InputText>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="Description" class="control-label">Description</label>
+                    <InputTextArea id="Description" class="form-control" @bind-Value="Product.Description"></InputTextArea>
+                </div>
+                <div class="form-group">
+                    <label for="Price" class="control-label">Price</label>
+                    <InputNumber id="Price" class="form-control" @bind-Value="Product.Price"></InputNumber>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="Stock" class="control-label">Stock</label>
+                    <InputNumber id="Stock" class="form-control" @bind-Value="Product.Stock"></InputNumber>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label class="col-form-label">Upload Image:</label>
+                    <SfUploader ID="UploadFile" AllowedExtensions=".png,.jpeg,.jpg" AllowMultiple=false>
+                        <UploaderEvents ValueChange="onChangefile" OnRemove="onRemove"></UploaderEvents>
+                        <UploaderTemplates>
+                            <Template Context="HttpContext">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <img class="upload-image" alt="Preview Image @(HttpContext.Name)"
+                                                 src="@(files.Count >0 ? files.Where(item=>item.Name == HttpContext.Name)?.FirstOrDefault()?.Path : string.Empty)">
+                                        </td>
+                                        <td>
+                                            <div style="padding: 7px;">
+                                                <h5 title="@(HttpContext.Name)">@(HttpContext.Name)</h5>
+                                                <i>@(HttpContext.Size) Bytes</i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <span class="e-icons e-file-remove-btn remove" id="removeIcon" title="Remove"></span>
+                             
+                            </Template>
+                        </UploaderTemplates>
+                    </SfUploader>
+
+
+                </div>
+                <div class="form-group">
+                    <label for="Shop" class="control-label">Shop</label>
+                    @if (ShopList == null)
+                    {
+                        <p> No Shop Found .  First Create Shop</p>
+                    }
+                    else
+                    {
+                        <InputSelect class="form-control" id="Shop" autofocus @bind-Value="@Product.ShopID">
+                            @foreach (var Shop in ShopList)
+                            {
+                                @if (Shop.UserId == currentuserid)
+                                {
+                                <option value="@Shop.Id">@Shop.Name</option>
+                                    }
+                                }
+
+                        </InputSelect>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label for="Shop" class="control-label">Catagory</label>
+                    <SfMultiSelect TValue="string" Placeholder="Select Catagory" @bind-value="@Product.CatagoryID"  TItem="@Catagory" Mode="VisualMode.CheckBox" DataSource="@CatagoriesList">
+                        <MultiSelectFieldSettings  Value="Id" Text="Name"></MultiSelectFieldSettings>
+                    </SfMultiSelect>
+                </div>
+
+
+
+
+
+
+
+
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button class="btn btn-default" @onclick="@cancel">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+
+    </div>
+</div>
+@functions {
+
+    Shop shop = new Shop();
+    Product Product = new Product();
+    Catagory Catagory = new Catagory();
+    string currentuserid = "";
+    String productcatagry = "";
+    Estore.Shared.Models.Shop[] ShopList;
+    Estore.Shared.Models.Catagory[] CatagoriesList;
+   
+
+    // private UserDetails userDetails = new UserDetails();
+    public MultipartFormDataContent content;
+    public string responseStr;
+    public HttpResponseMessage filepath { get; set; }
+    List<fileInfo> files = new List<fileInfo>();
+
+    public class fileInfo
+    {
+        public string Path { get; set; }
+        public string Name { get; set; }
+        public double Size { get; set; }
+    }
+
+    public void onChangefile(UploadChangeEventArgs args)
+    {
+        files = new List<fileInfo>();
+
+        foreach (var file in args.Files)
+        {
+
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+            var fullPath = Path.Combine(pathToSave, file.FileInfo.Name);
+
+            byte[] bytes = file.Stream.ToArray();
+            string base64 = Convert.ToBase64String(bytes);
+
+            files.Add(new fileInfo() { Path = @"data:images/" + file.FileInfo.Type + ";base64," + base64, Name = file.FileInfo.Name, Size = file.FileInfo.Size });
+            content = new MultipartFormDataContent {
+                    { new ByteArrayContent(file.Stream.GetBuffer()), file.FileInfo.Name }
+                };
+
+        }
+    }
+    public void onRemove(RemovingEventArgs args)
+    {
+        foreach (var removeFile in args.FilesData)
+        {
+            if (File.Exists(Path.Combine(@"\images", removeFile.Name)))
+            {
+                File.Delete(Path.Combine(@"\images\", removeFile.Name));
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+
+        {
+            CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
+("/api/Catagories/Index");
+            ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
+("/api/Shops/Index");
+
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+
+    }
+
+    async Task CreateProduct()
+    {
+        Product.UserID = currentuserid;
+        Product.Image = (files.Count > 0 )? files.FirstOrDefault()?.Path : string.Empty;
+        
+        await Http.PostAsJsonAsync("/api/Products/Create", Product);
+        UriHelper.NavigateTo("/productslist");
+
+
+    }
+    void cancel()
+    {
+        UriHelper.NavigateTo("/productslist");
+    }
+}
+
+<style>
+    .control_wrapper {
+        width: 450px;
+        margin: auto;
+    }
+
+    @@font-face {
+        font-family: 'Uploader_Icon';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAAKAIAAAwAgT1MvMj1tSfIAAAEoAAAAVmNtYXDnEOdVAAABiAAAADZnbHlmoZcPvgAAAcgAAABAaGVhZBLQTSUAAADQAAAANmhoZWEINQQDAAAArAAAACRobXR4CAAAAAAAAYAAAAAIbG9jYQAgAAAAAAHAAAAABm1heHABDgAdAAABCAAAACBuYW1lQySinQAAAggAAAIxcG9zdLfl0usAAAQ8AAAAMgABAAAEAAAAAFwEAAAAAAAD2AABAAAAAAAAAAAAAAAAAAAAAgABAAAAAQAA2vKJUF8PPPUACwQAAAAAANftBBgAAAAA1+0EGAAAAAAD2AP4AAAACAACAAAAAAAAAAEAAAACABEAAgAAAAAAAgAAAAoACgAAAP8AAAAAAAAAAQQAAZAABQAAAokCzAAAAI8CiQLMAAAB6wAyAQgAAAIABQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUGZFZABA5wDnAAQAAAAAXAQAAAAAAAABAAAAAAAABAAAAAQAAAAAAAACAAAAAwAAABQAAwABAAAAFAAEACIAAAAEAAQAAQAA5wD//wAA5wD//wAAAAEABAAAAAEAAAAAAAAAIAAAAAIAAAAAA9gD+AAHABAAADchESMVITUjEzM3ETMRFzMBKAOwPvzMPp1mtUC1Zv7FCAF6vb0BO7X+EAHwtQE7AAAAABIA3gABAAAAAAAAAAEAAAABAAAAAAABAAgAAQABAAAAAAACAAcACQABAAAAAAADAAgAEAABAAAAAAAEAAgAGAABAAAAAAAFAAsAIAABAAAAAAAGAAgAKwABAAAAAAAKACwAMwABAAAAAAALABIAXwADAAEECQAAAAIAcQADAAEECQABABAAcwADAAEECQACAA4AgwADAAEECQADABAAkQADAAEECQAEABAAoQADAAEECQAFABYAsQADAAEECQAGABAAxwADAAEECQAKAFgA1wADAAEECQALACQBLyBVcGxvYWRlclJlZ3VsYXJVcGxvYWRlclVwbG9hZGVyVmVyc2lvbiAxLjBVcGxvYWRlckZvbnQgZ2VuZXJhdGVkIHVzaW5nIFN5bmNmdXNpb24gTWV0cm8gU3R1ZGlvd3d3LnN5bmNmdXNpb24uY29tACAAVQBwAGwAbwBhAGQAZQByAFIAZQBnAHUAbABhAHIAVQBwAGwAbwBhAGQAZQByAFUAcABsAG8AYQBkAGUAcgBWAGUAcgBzAGkAbwBuACAAMQAuADAAVQBwAGwAbwBhAGQAZQByAEYAbwBuAHQAIABnAGUAbgBlAHIAYQB0AGUAZAAgAHUAcwBpAG4AZwAgAFMAeQBuAGMAZgB1AHMAaQBvAG4AIABNAGUAdAByAG8AIABTAHQAdQBkAGkAbwB3AHcAdwAuAHMAeQBuAGMAZgB1AHMAaQBvAG4ALgBjAG8AbQAAAAACAAAAAAAAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAgEDAAhVcGxvYWRlcgAAAAA=) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .e-upload .e-upload-files .e-icons.e-upload-icon {
+        font-family: 'Uploader_Icon';
+        speak: none;
+        font-size: 16px;
+        right: 35px;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+        .e-upload .e-upload-files .e-icons.e-upload-icon::before {
+            content: '\e700';
+        }
+
+    .upload-image {
+        width: 150px;
+        height: 150px;
+        display: inline-flex;
+        background-size: contain;
+        margin: 7px;
+        text-align: center;
+        line-height: 10;
+        border-radius: 5px;
+    }
+</style>

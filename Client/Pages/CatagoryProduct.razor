@@ -1,0 +1,118 @@
+﻿@page "/catagoryproduct/{Catagoryproduct}"
+@using Estore.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Estore.Client.Services
+@inject CustomStateProvider authStateProvider
+@inject HttpClient Http
+@attribute [Authorize]
+<section class="hero-slider">
+    <!-- Single Slider -->
+    <div class="single-slider">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-lg-9 offset-lg-3 col-12">
+                    <div class="text-inner">
+                        <div class="row">
+                            <div class="col-lg-7 col-12">
+                                <div class="hero-text">
+                                    <h1><span>Welcome To   </span>Estore</h1>
+                                    <p>Pakistan's best online shopping store with 1+ million  <br>  products at resounding discounts  with cash on delivery (COD).</p>
+                                    <div class="button">
+                                        <a href="/shopview" class="btn">Shop Now!</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Single Slider -->
+</section>
+<div class="col-lg-12 col-md-12 col-12">
+    <h2>@Catagory.Name </h2>
+    <div class="row">
+
+
+        @if (ProductList == null)
+        {
+                <p>No Product is Found</p>
+        }
+        else
+        {
+        @foreach (Product SingleProduct in ProductList)
+        {
+
+            @if (@getcatagoryarray(SingleProduct.CatagoryID).Contains(Catagoryproduct))
+            {
+
+                <div class="col-lg-3 col-md-4 col-12">
+                    <div class="single-product">
+                        <div class="product-img">
+                            <a href="product-details.html">
+                                <img class="default-img" src="@SingleProduct.Image" alt="#">
+                                <img class="hover-img" src="@SingleProduct.Image" alt="#">
+                            </a>
+                            <div class="button-head">
+                                <div class="product-action">
+                                    <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="/singleproductdetail/@SingleProduct.ID"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+                                  
+                                    
+                                </div>
+                                <div class="product-action-2">
+                                    <a title="Add to cart" href="/singleproductdetail/@SingleProduct.ID">View Product </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h3><a href="/singleproductdetail/@SingleProduct.ID">@SingleProduct.Name</a></h3>
+                            <div class="product-price">
+                                <span>PKr @SingleProduct.Price</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        }   </div>
+</div>
+@functions {
+    [Parameter]
+
+    public string Catagoryproduct { get; set; }
+    string currentuserid = "";
+    Catagory Catagory = new Catagory();
+
+
+    Estore.Shared.Models.Shop[] ShopList;
+    Estore.Shared.Models.Catagory[] CatagoriesList;
+    Estore.Shared.Models.Product[] ProductList;
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            ProductList = await Http.GetFromJsonAsync<Estore.Shared.Models.Product[]>
+("/api/Products/Index");
+            Catagory = await Http.GetFromJsonAsync<Catagory>
+("/api/Catagories/Details/" + Convert.ToInt32(Catagoryproduct));
+
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+
+    }
+    public string[] getcatagoryarray(String catagory_id)
+    {
+        string[] catagoryarray = catagory_id.Split(",");
+        return catagoryarray;
+    }
+}

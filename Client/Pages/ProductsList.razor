@@ -1,0 +1,156 @@
+﻿
+@page "/productslist"
+@using Estore.Client.Services
+@using Estore.Shared.Models
+@using System.Threading.Tasks
+@using System.Linq;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject CustomStateProvider authStateProvider
+@attribute [Authorize]
+
+<div class="card">
+    <div class="card-header">
+        <h1>Product</h1>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12">
+            <AuthorizeView Roles="Seller">
+                <a class="btn btn-primary alignright m-2" href="/addproduct">+ Add New product</a>
+            </AuthorizeView>
+        </div>
+        @if (ProductList == null)
+        {
+    <p>No Product</p>
+        }
+        else
+        {
+            <table style="max-height:800px;" class='table  table-striped table-responsive-md '>
+                <thead>
+                    <tr>
+                        
+                        <th>Image</th>
+                        <th>Name</th>
+                        <AuthorizeView Roles="Admin">
+                            <th>Email </th>
+                        </AuthorizeView>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <AuthorizeView Roles="Admin">
+                        @foreach (var Product in ProductList)
+                        {
+
+                            <tr>
+                                <td><img  style="height: 86px; width: 90px;" src="@Product.Image" /></td>
+
+                                <td>@Product.Name</td>
+
+                                <td>@getuserdata(Product.UserID) </td>
+                                <td>Pkr @Product.Price</td>
+                                <td>@Product.Stock </td>
+                                <td>
+                                    <a class="btn btn-info" href='/singleproductdetail/@Product.ID'>View</a>  |
+                                    <button class="btn btn-danger" @onclick="@(async () => await DeleteProduct(Product.ID))"> Delete</button>
+
+                                </td>
+                            </tr>
+                            i++;
+
+
+
+                        }
+                    </AuthorizeView>
+                    <AuthorizeView Roles="Seller">
+                        @foreach (var Product in ProductList)
+                        {
+
+
+                            @if (Product.UserID == currentuserid)
+                            {
+                                <tr>
+                                    <td><img style="height: 86px; width: 86px;" src="@Product.Image" /></td>
+
+                                    <td>@Product.Name</td>
+                                    <td>Pkr @Product.Price</td>
+                                    <td>@Product.Stock </td>
+
+                                    <td>
+                                        <a class="btn btn-info" href='/singleproductdetail/@Product.ID'>View</a>  |
+                                        <button class="btn btn-danger" @onclick="@(async () => await DeleteProduct(Product.ID))"> Delete</button>
+
+                                    </td>
+                                </tr>
+                                i++;
+
+                            }
+                        }
+                    </AuthorizeView>
+                </tbody>
+            </table>
+
+
+        }
+    </div>
+</div>
+
+@functions {
+
+    int i = 1;
+    string currentuserid = "";
+    string currentuserrole = "";
+
+
+    Estore.Shared.Models.AspNetUser[] UsersList;
+    Estore.Shared.Models.Product[] ProductList;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            UsersList = await Http.GetFromJsonAsync<Estore.Shared.Models.AspNetUser[]>
+                ("api/admin/GetUserInfofromId");
+
+
+            ProductList = await Http.GetFromJsonAsync<Estore.Shared.Models.Product[]>
+("/api/Products/Index");
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+            currentuserrole = userdata.Claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"].ToString();
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+    }
+    protected async Task DeleteProduct(int id)
+    {
+        await Http.DeleteAsync("api/Product/Delete/" + Convert.ToInt32(id));
+        UriHelper.NavigateTo("/productslist", true);
+
+
+    }
+
+    public String getuserdata(string id)
+    {
+        try
+        {
+            AspNetUser singleuser = UsersList.FirstOrDefault(t => t.Id == id);
+            return singleuser.NormalizedUserName;
+        }
+        catch
+        {
+            return "errr";
+        }
+
+
+
+    }
+
+}

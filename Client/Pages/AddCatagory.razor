@@ -1,0 +1,85 @@
+﻿@page "/addcatagory"
+@using System.Net.Http.Json;
+@using Estore.Shared.Models
+@using Estore.Client.Services
+@using Estore.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject CustomStateProvider authStateProvider
+@attribute [Authorize]
+
+<div class="card">
+    <div class="card-header">
+        <h1>Add New Catagory</h1>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <EditForm Model="@Catagory" OnValidSubmit="@CreateCatagory">
+
+                    <div class="form-group">
+                        <label for="Name" class="control-label">Name</label>
+                        <InputText id="Name" class="form-control" placeholder="Name" autofocus @bind-Value="Catagory.Name"></InputText>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Discription" class="control-label">Discription</label>
+                        <InputTextArea id="Discription" class="form-control" autofocus  @bind-Value="Catagory.Discription"></InputTextArea>
+
+
+
+
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button class="btn btn-default" @onclick="@cancel">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+@functions {
+
+
+    Catagory Catagory = new Catagory();
+    string currentuserid = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+
+    }
+    async Task CreateCatagory()
+    {
+        
+
+        await Http.PostAsJsonAsync("/api/Catagories/Create", Catagory);
+        UriHelper.NavigateTo("/CatagoryList");
+
+
+    }
+    void cancel()
+    {
+        UriHelper.NavigateTo("/CatagoryList");
+    }
+}

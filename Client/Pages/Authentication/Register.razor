@@ -1,0 +1,81 @@
+﻿@page "/register"
+@using Estore.Client.Services
+@using Estore.Shared.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@layout AuthLayout
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 col-lg-3 "></div>
+        <div class="col-6  my-3 card card-body bg-white p-3">
+            <h1 class="text-center text-dark text-uppercase">Sign up </h1>
+            <div class="row my-3 ml-2">
+                <div class="col-12">
+                    <EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="registerRequest">
+                        <DataAnnotationsValidator></DataAnnotationsValidator>
+                        <div class="form-group">
+                            <label for="inputemail" class="sr-only">Email</label>
+                            <InputText id="inputemail" class="form-control" placeholder="Email" autofocus @bind-Value="@registerRequest.email"></InputText>
+                            <ValidationMessage For="@(() => registerRequest.email)"></ValidationMessage>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputrole" class="sr-only">Role</label>
+                            <InputSelect class="form-control" id="inputrole" placeholder="Role" autofocus @bind-Value="@registerRequest.Roleid">
+                                
+                                <option value="2">Seller</option>
+                                <option value="3" selected>Buyer</option>
+
+                                </InputSelect>
+
+                                    <ValidationMessage For="@(() => registerRequest.Roleid)"></ValidationMessage>
+</div>
+                        <div class="form-group">
+                            <label for="inputPassword" class="sr-only">Password</label>
+                            <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="@registerRequest.password"></InputText>
+                            <ValidationMessage For="@(() => registerRequest.password)"></ValidationMessage>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPasswordConfirm" class="sr-only">Password Confirmation</label>
+                            <InputText type="password" id="inputPasswordConfirm" class="form-control" placeholder="Password Confirmation" @bind-Value="@registerRequest.ConfirmPassword"></InputText>
+                            <ValidationMessage For="@(() => registerRequest.ConfirmPassword)"></ValidationMessage>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Create account</button>
+
+                        <label class="text-danger">@error</label>
+                        <NavLink href="login">
+                            <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
+                        </NavLink>
+
+                    </EditForm>
+
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions{
+
+    RegisterRequest registerRequest { get; set; } = new RegisterRequest();
+    string error { get; set; }
+
+    async Task OnSubmit()
+    {
+        error = null;
+        try
+        {
+            await authStateProvider.Register(registerRequest);
+            navigationManager.NavigateTo("");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}
+
+

@@ -1,0 +1,149 @@
+﻿@page "/shopsList"
+@using Estore.Client.Services
+@using Estore.Shared.Models
+@using System.Threading.Tasks
+@using System.Linq;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject CustomStateProvider authStateProvider
+@attribute [Authorize ]
+
+<div class="card">
+    <div class="card-header">
+        <h1>Shops</h1>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12">
+            <AuthorizeView Roles="Seller">
+                <a class="btn btn-primary alignright m-2" href="/addshop">+ Add New Shop</a>
+                </AuthorizeView>
+        </div>
+        @if (ShopList == null)
+        {
+            <p>No Shops</p>
+        }
+        else
+        {
+            <table class='table  table-striped table-responsive-md'>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <AuthorizeView Roles="Admin">
+                            <th>Email </th>
+                        </AuthorizeView>
+                        <th colspan="2">Address</th>
+                        <th> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <AuthorizeView Roles="Admin">
+                        @foreach (var Shop in ShopList)
+                        {
+                           
+                            <tr>
+                                <td>@i</td>
+                                <td>@Shop.Name</td>
+                                <td>@getuserdata(Shop.UserId) </td>
+                                <td colspan="2">@Shop.Address</td>
+
+                                <td>
+                                    <a class="btn btn-info" href='/editshop/@Shop.Id'>Edit</a>  |
+                                    <button class="btn btn-danger" @onclick="@(async () => await DeleteShop(Shop.Id))"> Delete</button>
+
+                                </td>
+                            </tr>
+                            i++;
+                           
+
+
+                        }
+                    </AuthorizeView>
+                    <AuthorizeView Roles="Seller">
+                        @foreach (var Shop in ShopList)
+                        {
+
+
+                            @if (Shop.UserId == currentuserid)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@Shop.Name</td>
+                                    <td colspan="2">@Shop.Address</td>
+
+                                    <td>
+                                        <a class="btn btn-info" href='/editshop/@Shop.Id'>Edit</a>  |
+                                        <button class="btn btn-danger" @onclick="@(async () => await DeleteShop(Shop.Id))"> Delete</button>
+
+                                    </td>
+                                </tr>
+                                i++;
+
+                            }
+                        }
+                    </AuthorizeView>
+                </tbody>
+            </table>
+
+
+        }
+    </div>
+</div>
+
+@functions {
+
+    int i = 1;
+    string currentuserid = "";
+    string currentuserrole = "";
+   
+
+    Estore.Shared.Models.AspNetUser[] UsersList;
+    Estore.Shared.Models.Shop[] ShopList;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            UsersList = await Http.GetFromJsonAsync<Estore.Shared.Models.AspNetUser[]>
+                ("api/admin/GetUserInfofromId");
+
+
+            ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
+("/api/Shops/Index");
+            CurrentUser userdata = await authStateProvider.GetCurrentUser();
+            currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
+            currentuserrole = userdata.Claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"].ToString();
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+    }
+    protected async Task DeleteShop(int id)
+    {
+        await Http.DeleteAsync("api/Shops/Delete/" + Convert.ToInt32(id));
+        UriHelper.NavigateTo("/shopsList", true);
+
+
+    }
+
+    public String getuserdata(string id)
+    {
+        try
+        {
+            AspNetUser singleuser = UsersList.FirstOrDefault(t=> t.Id == id);
+            return singleuser.NormalizedUserName;
+        }
+        catch
+        {
+            return "errr";
+        }
+
+
+
+    }
+
+}

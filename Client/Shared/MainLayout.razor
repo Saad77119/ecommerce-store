@@ -1,0 +1,52 @@
+﻿@using Estore.Shared.Models
+@using Estore.Client.Services
+@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+    <AuthorizeView Roles="Buyer">
+        <div class="page" >
+
+
+            <div class="main">
+
+                <div class="content ">
+                   
+
+                    <Header></Header>
+                    @Body
+                </div>
+            </div>
+        </div>
+    </AuthorizeView>
+    <AuthorizeView Roles="Admin,Seller">
+        @page "/Index2"
+        <div class="app sidebar-mini rtl">
+            <!-- Navbar-->
+
+           <NavMenu></NavMenu>
+            <main class="app-content">
+                
+                @Body
+
+            </main>
+        </div>
+
+    </AuthorizeView>
+    @functions{
+
+        [CascadingParameter]
+        Task<AuthenticationState> AuthenticationState { get; set; }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (!(await AuthenticationState).User.Identity.IsAuthenticated)
+            {
+                navigationManager.NavigateTo("/login");
+            }
+        }
+        async Task LogoutClick()
+        {
+            await authStateProvider.Logout();
+            navigationManager.NavigateTo("/login");
+        }
+    }
