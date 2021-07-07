@@ -86,46 +86,50 @@
                                             <div class="tab-pane  @((y==0)?"fade show active":"" ) " id="@singleCatagory.Name.Replace(" ","")" role="tabpanel">
                                                 <div class="tab-single">
                                                     <div class="row">
-                                                        
+
                                                         @foreach (Product SingleProduct in ProductList)
                                                         {
 
-                                                            @if (@getcatagoryarray(SingleProduct.CatagoryID).Contains(singleCatagory.Id.ToString()))
-                                                            {
+                                                                @if (@getcatagoryarray(SingleProduct.CatagoryID).Contains(singleCatagory.Id.ToString()))
+                                                                {
 
-                                                                <div class="col-xl-3 col-lg-4 col-md-4 col-12">
-                                                                    <div class="single-product">
-                                                                        <div class="product-img">
-                                                                            <a href="/singleproductdetail/@SingleProduct.ID">
-                                                                                <img class="default-img" src="@SingleProduct.Image" alt="#">
-                                                                                <img class="hover-img" src="@SingleProduct.Image" alt="#">
-                                                                            </a>
-                                                                            <div class="button-head">
-                                                                                <div class="product-action">
-                                                                                    <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
-                                                                                  
-                                                                                    <a title="Compare" href="/singleproductdetail/@SingleProduct.ID"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
-                                                                                </div>
-                                                                                <div class="product-action-2">
-                                                                                    <a title="View Product" href="#/singleproductdetail/@SingleProduct.ID">View Product</a>
+                                                                    <div class="col-xl-3 col-lg-4 col-md-4 col-12">
+                                                                        <div class="single-product">
+                                                                            <div class="product-img">
+                                                                                <a href="/singleproductdetail/@SingleProduct.ID">
+                                                                                    <img class="default-img" src="@SingleProduct.Image" alt="#">
+                                                                                    <img class="hover-img" src="@SingleProduct.Image" alt="#">
+                                                                                </a>
+                                                                                <div class="button-head">
+                                                                                    <div class="product-action">
+                                                                                        <a data-toggle="modal" data-target="#exampleModal" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+
+                                                                                        <a title="Compare" href="/singleproductdetail/@SingleProduct.ID"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+                                                                                    </div>
+                                                                                    <div class="product-action-2">
+                                                                                        <a title="View Product" href="#/singleproductdetail/@SingleProduct.ID">View Product</a>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                          </div>
-                                                                        <div class="product-content">
-                                                                            <h3><a href="/singleproductdetail/@SingleProduct.ID">@SingleProduct.Name</a></h3>
-                                                                            <div class="product-price">
-                                                                                <span>PKr @SingleProduct.Price</span>
+                                                                            <div class="product-content">
+                                                                                <h3><a href="/singleproductdetail/@SingleProduct.ID">@SingleProduct.Name</a></h3>
+                                                                                <div class="product-price">
+                                                                                    <span>PKr @SingleProduct.Price</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            }
+                                                                }
+
+                                                           
+
+                                                           
                                                         }
                                                     </div>
                                                 </div>
                                             </div>
                                             <!--/ End Single Tab -->
-                                        y=y+1;
+                                        y =y+1;
                                     }}
                                 </div>
                         </div>
@@ -303,7 +307,7 @@
     int i = 0;
     int y = 0;
     string currentuserid = "";
-    Estore.Shared.Models.Shop[] ShopList;
+    // Estore.Shared.Models.Shop[] ShopList;
     Estore.Shared.Models.Catagory[] CatagoriesList;
     Estore.Shared.Models.Product[] ProductList;
     protected override async Task OnInitializedAsync()
@@ -315,9 +319,9 @@
 ("/api/Products/Index");
             CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
 ("api/Catagories/Index");
-            CatagoriesList.Take(7);
-            ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
-("api/Shops/Index");
+            
+       //     ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
+// ("api/Shops/Index");
             CurrentUser userdata = await authStateProvider.GetCurrentUser();
             currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
 
@@ -333,6 +337,8 @@
     {
         string[] catagoryarray = catagory_id.Split(",");
         return catagoryarray;
+
+
     }
 
 

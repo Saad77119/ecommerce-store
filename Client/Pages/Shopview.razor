@@ -19,7 +19,7 @@
                                     <h1><span>Welcome To   </span>Estore</h1>
                                     <p>Pakistan's best online shopping store with 1+ million  <br>  products at resounding discounts  with cash on delivery (COD).</p>
                                     <div class="button">
-                                        <a href="#" class="btn">Shop Now!</a>
+                                        <a href="/shopview" class="btn">Shop Now!</a>
                                     </div>
                                 </div>
                             </div>
@@ -46,28 +46,31 @@
                             }
                             else
                             {
-                                @foreach(Catagory SingleCatagory in CatagoriesList)
+                                @foreach (Catagory SingleCatagory in CatagoriesList)
                                 {
-                                    <li><a href="#">@SingleCatagory.Name</a></li>
+                                    <li><a @onclick="() => ViewCatagoryProduct(SingleCatagory.Id)">@SingleCatagory.Name</a></li>
 
-                                    }
                                 }
-                            </ul>
+                            }
+                        </ul>
                     </div>
                     <!--/ End Single Widget -->
+                
+                    
+
 
                 </div>
             </div>
             <div class="col-lg-9 col-md-8 col-12">
 
                 <div class="row">
-                    @if (ProductList == null)
+                    @if (SelectProductList.Length == 0)
                     {
                         <p>No Product is Found</p>
                     }
                     else
                     {
-                        @foreach (Product SingleProduct in ProductList)
+                        @foreach (Product SingleProduct in SelectProductList)
                         {
                             <div class="col-lg-4 col-md-6 col-12">
                                 <div class="single-product">
@@ -105,6 +108,7 @@
     string currentuserid = "";
     Estore.Shared.Models.Catagory[] CatagoriesList;
     Estore.Shared.Models.Product[] ProductList;
+    Estore.Shared.Models.Product[] SelectProductList = Array.Empty<Product>();
     protected override async Task OnInitializedAsync()
     {
 
@@ -114,7 +118,7 @@
 ("/api/Products/Index");
             CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
 ("api/Catagories/Index");
-          
+            SelectProductList = ProductList;
 
             CurrentUser userdata = await authStateProvider.GetCurrentUser();
             currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
@@ -127,5 +131,36 @@
 
 
     }
+    protected async Task ViewCatagoryProduct(int id)
+    {
+        List<Product> SelectedProductList = new List<Product>() { };
+        Estore.Shared.Models.Product[] SelectProductListarray = { } ;
+
+        if (ProductList.Length != 0)
+        {
+            foreach (var singleProduct in ProductList)
+            {
+
+
+                var catagoryarray = singleProduct.CatagoryID.Split(",");
+                foreach (var singleCatagory in catagoryarray)
+                {
+                    if (Convert.ToInt32(singleCatagory) == Convert.ToInt32(id))
+                    {
+                        SelectedProductList.Add(singleProduct);
+                        SelectProductListarray = SelectedProductList.ToArray();
+                    }
+                }
+
+
+            }
+
+        }
+
+
+        SelectProductList = SelectProductListarray;
+
+    }
+
 
 }

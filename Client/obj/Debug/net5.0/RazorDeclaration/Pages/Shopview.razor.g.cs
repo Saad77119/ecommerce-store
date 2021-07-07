@@ -154,11 +154,12 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 104 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\Shopview.razor"
+#line 107 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\Shopview.razor"
            
     string currentuserid = "";
     Estore.Shared.Models.Catagory[] CatagoriesList;
     Estore.Shared.Models.Product[] ProductList;
+    Estore.Shared.Models.Product[] SelectProductList = Array.Empty<Product>();
     protected override async Task OnInitializedAsync()
     {
 
@@ -168,7 +169,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 ("/api/Products/Index");
             CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
 ("api/Catagories/Index");
-          
+            SelectProductList = ProductList;
 
             CurrentUser userdata = await authStateProvider.GetCurrentUser();
             currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
@@ -181,6 +182,37 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 
     }
+    protected async Task ViewCatagoryProduct(int id)
+    {
+        List<Product> SelectedProductList = new List<Product>() { };
+        Estore.Shared.Models.Product[] SelectProductListarray = { } ;
+
+        if (ProductList.Length != 0)
+        {
+            foreach (var singleProduct in ProductList)
+            {
+
+
+                var catagoryarray = singleProduct.CatagoryID.Split(",");
+                foreach (var singleCatagory in catagoryarray)
+                {
+                    if (Convert.ToInt32(singleCatagory) == Convert.ToInt32(id))
+                    {
+                        SelectedProductList.Add(singleProduct);
+                        SelectProductListarray = SelectedProductList.ToArray();
+                    }
+                }
+
+
+            }
+
+        }
+
+
+        SelectProductList = SelectProductListarray;
+
+    }
+
 
 
 #line default

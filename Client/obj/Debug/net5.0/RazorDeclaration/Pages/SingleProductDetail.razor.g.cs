@@ -147,7 +147,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 90 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\SingleProductDetail.razor"
+#line 91 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\SingleProductDetail.razor"
             
     [Parameter]
     public string SinglproductId { get; set; }

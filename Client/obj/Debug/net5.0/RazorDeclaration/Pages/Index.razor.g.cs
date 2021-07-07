@@ -168,12 +168,12 @@ using Estore.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 302 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\Index.razor"
+#line 306 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\Index.razor"
            
     int i = 0;
     int y = 0;
     string currentuserid = "";
-    Estore.Shared.Models.Shop[] ShopList;
+    // Estore.Shared.Models.Shop[] ShopList;
     Estore.Shared.Models.Catagory[] CatagoriesList;
     Estore.Shared.Models.Product[] ProductList;
     protected override async Task OnInitializedAsync()
@@ -185,9 +185,9 @@ using Estore.Shared;
 ("/api/Products/Index");
             CatagoriesList = await Http.GetFromJsonAsync<Estore.Shared.Models.Catagory[]>
 ("api/Catagories/Index");
-            CatagoriesList.Take(7);
-            ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
-("api/Shops/Index");
+            
+       //     ShopList = await Http.GetFromJsonAsync<Estore.Shared.Models.Shop[]>
+// ("api/Shops/Index");
             CurrentUser userdata = await authStateProvider.GetCurrentUser();
             currentuserid = userdata.Claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"].ToString();
 
@@ -203,6 +203,8 @@ using Estore.Shared;
     {
         string[] catagoryarray = catagory_id.Split(",");
         return catagoryarray;
+
+
     }
 
 

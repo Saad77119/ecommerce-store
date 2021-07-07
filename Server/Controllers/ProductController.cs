@@ -44,9 +44,8 @@ namespace Estore.Server.Controllers
         {
             if (ModelState.IsValid)
                 objProduct.AddProduct(Products);
-                
-               
-            // Split authors separated by a comma followed by space  
+
+
             string[] CatagoryList = Products.CatagoryID.Split(",");
             foreach (string SingleCatagory in CatagoryList)
             {

@@ -154,7 +154,7 @@ using Estore.Client.Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 81 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\CatagoryProduct.razor"
+#line 82 "C:\Users\saadr\Downloads\estorenew-master\estorenew-master\Client\Pages\CatagoryProduct.razor"
             
     [Parameter]
 
@@ -187,11 +187,27 @@ using Estore.Client.Services;
 
 
     }
+
     public string[] getcatagoryarray(String catagory_id)
     {
-        string[] catagoryarray = catagory_id.Split(",");
+        List<string> list = new List<string>();
+        string[] catagoryarray = new string[10];
+        if (catagory_id.Contains(","))
+        {
+
+            catagoryarray = catagory_id.Split(",");
+
+        }
+        else
+        {
+            list.Add(catagory_id);
+            catagoryarray = list.ToArray() ;
+
+        }
         return catagoryarray;
+
     }
+
 
 #line default
 #line hidden

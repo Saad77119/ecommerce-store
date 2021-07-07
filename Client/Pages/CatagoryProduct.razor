@@ -32,7 +32,8 @@
     <!--/ End Single Slider -->
 </section>
 <div class="col-lg-12 col-md-12 col-12">
-    <h2>@Catagory.Name </h2>
+    <h2 class="text-center text-capitalize" style=" font-size: 4em; margin-top: 41px; " >@Catagory.Name </h2>
+    <p class="text-center">@Catagory.Discription</p>
     <div class="row">
 
 
@@ -110,9 +111,25 @@
 
 
     }
+
     public string[] getcatagoryarray(String catagory_id)
     {
-        string[] catagoryarray = catagory_id.Split(",");
+        List<string> list = new List<string>();
+        string[] catagoryarray = new string[10];
+        if (catagory_id.Contains(","))
+        {
+
+            catagoryarray = catagory_id.Split(",");
+
+        }
+        else
+        {
+            list.Add(catagory_id);
+            catagoryarray = list.ToArray() ;
+
+        }
         return catagoryarray;
+
     }
+
 }
